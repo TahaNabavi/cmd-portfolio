@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "main";
+  src: url("./assets/font.ttf");
+}
+
+body {
+  font-family: "main", Arial, Helvetica, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(74, 222, 128);
+  border-radius: 6px;
+}
+.mid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mid-c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ani-scale {
+  animation: ani1 var(--time) ease-in-out;
+}
+@keyframes ani1 {
+  0% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+}
+.cmdFollow {
+  position: relative;
+  width: 100%;
+  &::before {
+    content:"";
+    position: absolute;
+    left: -10px;
+    top: 10px;
+    height: calc(100% - 10px);
+    width: 8px;
+    border-top: 2px solid #ffffff44;
+    border-left: 2px solid #ffffff44;
+    border-radius: 15px 0 0 0;
+  }
+  &::after {
+    content:"";
+    position: absolute;
+    left: -10px;
+    top: 0px;
+    height: 15px;
+    width: 8px;
+    border-left: 2px solid #ffffff44;
+  }
+}
+/* .cmdFollow > *:only-child {
+  background: red;
+}
+.cmdFollow > *:first-child {
+  background: blue;
+  
+}
+.cmdFollow > *:last-child {
+  background: yellow;
+}
+.cmdFollow > *:not(:first-child):not(:last-child) {
+  background: purple;
+} */
