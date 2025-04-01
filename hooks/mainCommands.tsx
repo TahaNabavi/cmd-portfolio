@@ -4,6 +4,7 @@ import {
   commandExecute,
   findCommand,
 } from "@/commands/main";
+import users from "@/data/users";
 import { AppContextType, LocationPath } from "@components/context";
 import getRandomDarkColor from "@global/randomColor";
 
@@ -53,12 +54,19 @@ export default class MainCommandsClass {
     const { setCommandItem } = context;
     setCommandItem([]);
   }
-  public user(context: AppContextType, args: string[]){
-  }
-  public userPreview(context: AppContextType, args: string[]){
-  }
-  public userShow(context: AppContextType, args: string[]){
-  }
-  public userChange(context: AppContextType, args: string[]){
+  public user(context: AppContextType, args: string[]) {}
+  public userPreview(context: AppContextType, args: string[]) {}
+  public userShow(context: AppContextType, args: string[]) {}
+  public userChange(context: AppContextType, args: string[]) {
+    const user = users.find((g) => g.name === args[0]);
+    if (!user) {
+      context.writer("normal",)
+    } else {
+      context.setLocation({
+        user: user.name,
+        image: user.image,
+        path: [],
+      });
+    }
   }
 }

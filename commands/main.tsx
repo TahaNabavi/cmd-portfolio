@@ -5,6 +5,13 @@ import { getHelpText } from "@/functions/help";
 import mainCommands from "./mainCommands";
 import users from "@/data/users";
 
+export type FuncData = {
+  context: AppContextType;
+  variables: string[];
+  input: string;
+  cmd: CommandOption | Command;
+};
+
 export type CommandVariable = {
   name: string;
   required: boolean;
@@ -16,8 +23,8 @@ export interface BaseCommand {
   description: string;
   icon?: ReactNode;
   fullPath: string;
-  command?: (context: AppContextType, variables: string[]) => void;
-  preview?: (context: AppContextType, variables: string[]) => void;
+  command?: (data: FuncData) => void;
+  preview?: (data: FuncData) => void;
 }
 
 export interface CommandOption extends BaseCommand {
@@ -48,7 +55,7 @@ function run(
 ) {
   if (type === "command") {
     if (cmd.command) {
-      cmd.command(context, items);
+      cmd.command({ context, variables: items, input, cmd });
       return true;
     } else {
       context.writer(
@@ -60,7 +67,7 @@ function run(
     }
   } else {
     if (cmd.preview) {
-      cmd.preview(context, items);
+      cmd.preview({ context, variables: items, input, cmd });
       return true;
     } else {
       context.writer(
