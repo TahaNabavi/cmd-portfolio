@@ -1,37 +1,50 @@
 import {
   allCommands,
   Command,
+  commandExecute,
   CommandOption,
   findCommand,
 } from "@/commands/main";
 import { AppContextType } from "@components/context";
 
-function formatCommand(cmd: Command | CommandOption, indent = 0) {
-  return (
-    <div key={cmd.name} className={`pl-${indent} ms-4 cmdFollow`}>
-      <span className="text-green-400">{cmd.name}</span>{" "}
-      <span className="text-gray-400">
-        - {cmd.description || "No description"}
-      </span>
-      {/* Command Variables */}
-      {cmd.commandVariable?.map((varObj) => (
-        <div
-          key={varObj.name}
-          className={`pl-${indent + 6} text-blue-300 ms-4 cmdFollow`}
-        >
-          [{varObj.name}] - {varObj.required ? "Required" : "Optional"}
-        </div>
-      ))}
-      {/* Subcommands */}
-      {cmd.commandOption?.map((subCmd) => formatCommand(subCmd, indent + 6))}
-    </div>
-  );
-}
-
 export function getHelpText(context: AppContextType, path: string) {
   const { writer, location } = context;
   const args = path.trim().split(/\s+/).filter(Boolean);
-  
+
+  function runHelpForCommand(name: string) {
+    commandExecute(context, "command", name + " --help");
+  }
+
+  function formatCommand(cmd: Command | CommandOption, indent = 0) {
+    return (
+      <div key={cmd.name} className={`pl-${indent} ms-4 cmdFollow`}>
+        <button
+          className="text-green-400 hover:underline"
+          data-menu-id="help"
+          data-input={cmd.fullPath}
+          onClick={() => runHelpForCommand(cmd.fullPath)}
+        >
+          {cmd.name}
+        </button>{" "}
+        <span className="text-gray-400">
+          - {cmd.description || "No description"}
+        </span>
+        {/* Command Variables */}
+        {cmd.commandVariable?.map((varObj) => (
+          <div
+            key={varObj.name}
+            className={`pl-${indent + 6} text-blue-300 ms-4 cmdFollow`}
+          >
+            [{varObj.name}] -{" "}
+            {varObj.required ? "Required variable" : "Optional variable"}
+          </div>
+        ))}
+        {/* Subcommands */}
+        {cmd.commandOption?.map((subCmd) => formatCommand(subCmd, indent + 6))}
+      </div>
+    );
+  }
+
   let cmd = "";
   path.split(" ").map((g) => {
     if (![...location.path.map((e) => e.name)].includes(g)) {
@@ -48,10 +61,18 @@ export function getHelpText(context: AppContextType, path: string) {
       writer(
         "normal",
         cmd,
-        <div className="text-gray-200">
+        <div className="text-gray-200 cmdFollow">
           {allCommands.map((cmd) => (
-            <div key={cmd.name}>
-              <span className="text-green-400">{cmd.name}</span> -{" "}
+            <div key={cmd.name} className="cmdFollow">
+              <button
+                className="text-green-400 hover:underline"
+                data-menu-id="help"
+                data-input={cmd.fullPath}
+                onClick={() => runHelpForCommand(cmd.fullPath)}
+              >
+                {cmd.name}
+              </button>{" "}
+              -{" "}
               <span className="text-gray-400">
                 {cmd.description || "No description"}
               </span>

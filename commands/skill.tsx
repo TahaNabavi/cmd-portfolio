@@ -135,13 +135,15 @@ const skillCommands: Command = {
   ),
   followPath: true,
   preview: SkillClass.preview,
+  fullPath: "skill",
   commandVariable: [],
   commandOption: [
     {
       name: "show",
       description: "",
-      command:SkillClass.showSkill,
+      command: SkillClass.showSkill,
       preview: SkillClass.showPreview,
+      fullPath: "skill show",
       commandVariable: [
         {
           name: "skill_name",
@@ -154,11 +156,13 @@ const skillCommands: Command = {
           name: "--all",
           description: "show all user skills",
           command: SkillClass.showAll,
+          fullPath: "skill show --all",
           commandOption: [
             {
               name: "--details",
               description: "show all user skills with their description",
               command: SkillClass.showAllDetails,
+              fullPath: "skill show --all --details",
             },
           ],
         },
@@ -167,7 +171,8 @@ const skillCommands: Command = {
     {
       name: "cat",
       description: "show user skills with categories",
-      command:SkillClass.cat,
+      command: SkillClass.cat,
+      fullPath: "skill cat",
       commandVariable: [
         {
           name: "name",
@@ -178,7 +183,8 @@ const skillCommands: Command = {
         {
           name: "--details",
           description: "show user skills with categories & their description",
-          command:SkillClass.catWithDetails,
+          command: SkillClass.catWithDetails,
+          fullPath: "skill cat --details",
         },
       ],
     },

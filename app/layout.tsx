@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Client from "@components/client";
+import RightClickMenu from "@components/rightClickMenu";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,11 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className="dark:bg-neutral-950 dark:text-white"
-      >
+      <body className="dark:bg-neutral-950 dark:text-white">
         <Client>
-        {children}
+          <RightClickMenu />
+          {children}
         </Client>
       </body>
     </html>

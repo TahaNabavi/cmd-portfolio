@@ -53,4 +53,12 @@ export default class MainCommandsClass {
     const { setCommandItem } = context;
     setCommandItem([]);
   }
+  public user(context: AppContextType, args: string[]){
+  }
+  public userPreview(context: AppContextType, args: string[]){
+  }
+  public userShow(context: AppContextType, args: string[]){
+  }
+  public userChange(context: AppContextType, args: string[]){
+  }
 }

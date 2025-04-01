@@ -13,30 +13,27 @@ export default function Terminal({
   ref: RefObject<HTMLDivElement | null>;
 }) {
   const context = useContext(AppContext)!;
-  const { location } = context;
+  const { location, terminalRef } = context;
 
   const [height, setHeight] = useState(0);
   const [commands, setCommands] = useState<{ base: string; cmd: string }[]>([]);
   const [commandSelect, setCommandSelect] = useState(-1);
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Adjust the height dynamically based on content
   const adjustHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // Reset height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-      setHeight(textareaRef.current.scrollHeight);
+    if (terminalRef.current) {
+      terminalRef.current.style.height = "auto"; // Reset height
+      terminalRef.current.style.height = `${terminalRef.current.scrollHeight}px`;
+      setHeight(terminalRef.current.scrollHeight);
     }
   };
 
   useEffect(() => {
-    textareaRef.current?.focus();
+    terminalRef.current?.focus();
     adjustHeight();
 
     const resizeObserver = new ResizeObserver(adjustHeight);
-    if (textareaRef.current) {
-      resizeObserver.observe(textareaRef.current);
+    if (terminalRef.current) {
+      resizeObserver.observe(terminalRef.current);
     }
 
     return () => {
@@ -45,28 +42,28 @@ export default function Terminal({
   }, []);
 
   useEffect(() => {
-    if (!textareaRef.current) return;
+    if (!terminalRef.current) return;
     if (commandSelect === -1 || commands.length === 0) {
-      textareaRef.current.value = "";
+      terminalRef.current.value = "";
     } else {
       const cmd = commands[commandSelect];
       if (!cmd) {
-        textareaRef.current.value = "";
+        terminalRef.current.value = "";
       } else {
         const base = location.path.map((g) => g.name).join(" ");
-  
+
         if (cmd.base === base) {
-          textareaRef.current.value = cmd.cmd;
+          terminalRef.current.value = cmd.cmd;
         } else if (cmd.base.startsWith(base)) {
-          textareaRef.current.value = cmd.base.replace(base, "").trim() + " " + cmd.cmd;
+          terminalRef.current.value =
+            cmd.base.replace(base, "").trim() + " " + cmd.cmd;
         } else {
-          textareaRef.current.value = `${cmd.base} ${cmd.cmd}`.trim();
+          terminalRef.current.value = `${cmd.base} ${cmd.cmd}`.trim();
         }
       }
-      adjustHeight(); 
+      adjustHeight();
     }
   }, [commandSelect, commands, location.path]);
-  
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "ArrowUp") {
@@ -77,7 +74,7 @@ export default function Terminal({
       setCommandSelect((prev) => (prev > 0 ? prev - 1 : -1));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const commandText = textareaRef.current!.value.trim();
+      const commandText = terminalRef.current!.value.trim();
       if (!commandText) return;
 
       let baseCommand = location.path.map((e) => e.name).join(" ");
@@ -85,7 +82,7 @@ export default function Terminal({
 
       setCommands((prev) => [{ base: baseCommand, cmd: commandText }, ...prev]);
       setCommandSelect(-1);
-      textareaRef.current!.value = "";
+      terminalRef.current!.value = "";
       adjustHeight();
     }
   };
@@ -141,7 +138,7 @@ export default function Terminal({
         </AnimatePresence>
       </div>
       <textarea
-        ref={textareaRef}
+        ref={terminalRef}
         className="bg-transparent text-green-400 outline-none resize-none w-full overflow-y-hidden pe-2 py-3"
         rows={1}
         autoFocus

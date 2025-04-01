@@ -15,6 +15,7 @@ export interface BaseCommand {
   name: string;
   description: string;
   icon?: ReactNode;
+  fullPath: string;
   command?: (context: AppContextType, variables: string[]) => void;
   preview?: (context: AppContextType, variables: string[]) => void;
 }
@@ -42,14 +43,19 @@ function run(
   context: AppContextType,
   type: "command" | "preview",
   cmd: Command | CommandOption,
-  items: string[]
+  items: string[],
+  input: string
 ) {
   if (type === "command") {
     if (cmd.command) {
       cmd.command(context, items);
       return true;
     } else {
-      // error
+      context.writer(
+        "error",
+        input,
+        `The command "${cmd.name}" does not have an execution function. It might be a placeholder or missing implementation.`
+      );
       return false;
     }
   } else {
@@ -57,11 +63,16 @@ function run(
       cmd.preview(context, items);
       return true;
     } else {
-      // error
+      context.writer(
+        "error",
+        input,
+        `The command "${cmd.name}" does not support preview mode.`
+      );
       return false;
     }
   }
 }
+
 function executeCommand(
   context: AppContextType,
   type: "command" | "preview",
@@ -70,7 +81,7 @@ function executeCommand(
   input: string
 ): boolean {
   if (args.length === 0) {
-    run(context, type, cmd, []);
+    run(context, type, cmd, [], input);
   }
 
   let currentCommand: CommandOption | Command = cmd;
@@ -132,15 +143,17 @@ function executeCommand(
           <br />
           <span className="text-gray-400">To see the correct usage, run:</span>
           <br />
-          <b className="text-blue-500">{currentCommand.name} --help</b>
+          <b className="text-blue-500">
+            {input.split(currentCommand.name)[0]} {currentCommand.name} --help
+          </b>
         </>
       );
       return false;
     }
 
-    return run(context, type, currentCommand, currentArgs);
+    return run(context, type, currentCommand, currentArgs, input);
   } else {
-    return run(context, type, currentCommand,currentArgs);
+    return run(context, type, currentCommand, currentArgs, input);
   }
 }
 
@@ -164,12 +177,20 @@ export function commandExecute(
     context.writer(
       "error",
       input,
-      `command : ${args[0]} is not allowed for this user`
+      `command ${args[0]} is not allowed for this user`
     );
     return;
   }
 
-  if (args[args.length - 1] === "--help") {
+  if (args.includes("--help")) {
+    if (args.indexOf("--help") !== args.length - 1) {
+      context.writer(
+        "error",
+        input,
+        `command --help has no any options or variables`
+      );
+      return;
+    }
     let helptext: string[] = [];
     if (base) {
       args.unshift(base);

@@ -4,8 +4,9 @@ import {
   createContext,
   Dispatch,
   ReactNode,
+  RefObject,
   SetStateAction,
-  useContext,
+  useRef,
   useState,
 } from "react";
 
@@ -29,6 +30,7 @@ export type AppContextType = {
   setLocation: Dispatch<SetStateAction<Location>>;
   commandItem: CommandItem[];
   setCommandItem: Dispatch<SetStateAction<CommandItem[]>>;
+  terminalRef:RefObject<HTMLTextAreaElement | null>;
   writer: (
     type: "success" | "warn" | "error" | "normal",
     cmd: string,
@@ -45,6 +47,8 @@ export default function AppProvider({ children }: { children: ReactNode }) {
     path: [],
   });
   const [commandItem, setCommandItem] = useState<CommandItem[]>([]);
+
+  const terminalRef = useRef<HTMLTextAreaElement>(null);
 
   function writer(
     type: "success" | "warn" | "error" | "normal",
@@ -83,6 +87,7 @@ export default function AppProvider({ children }: { children: ReactNode }) {
     setLocation,
     commandItem,
     setCommandItem,
+    terminalRef,
     writer,
   };
 
