@@ -174,7 +174,6 @@ users
   └── menuData.tsx      # Right click menus per element
 /hooks                  # Write all command logic as hooks or classes
 /commands               # Write and organize command objects
-/components/context.tsx # Global state and utilities available as `context`
 ```
 
 ---
