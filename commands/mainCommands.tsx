@@ -150,7 +150,6 @@ const mainCommands: Command[] = [
       </>
     ),
     preview: MainClass.userPreview,
-    command: MainClass.user,
     fullPath: "user",
     commandVariable: [],
     commandOption: [

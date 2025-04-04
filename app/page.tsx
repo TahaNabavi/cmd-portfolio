@@ -2,7 +2,7 @@
 
 import CommandsLine from "@components/commandsLine";
 import Terminal from "@components/terminal";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Page() {
   const terminalRef= useRef<HTMLDivElement>(null)

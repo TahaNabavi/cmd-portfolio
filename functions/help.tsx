@@ -22,7 +22,10 @@ export function getHelpText(context: AppContextType, path: string) {
           className="text-green-400 hover:underline"
           data-menu-id="help"
           data-input={cmd.fullPath}
-          onClick={() => runHelpForCommand(cmd.fullPath)}
+          data-btn-help={false}
+          data-btn-run={cmd.command ? true : false}
+          data-btn-preview={cmd.preview ? true : false}
+          data-btn-write={true}
         >
           {cmd.name}
         </button>{" "}

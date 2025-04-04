@@ -1,26 +1,11 @@
-import { AppContextType } from "@components/context";
-
+import { FuncData } from "@/commands/main";
 export default class Skill {
   constructor() {}
-  public preview() {
-    console.log("hi");
-  }
-  public showAll() {
-    console.log("showAllSkill");
-  }
-  public showPreview() {
-    console.log("showAllSkill");
-  }
-  public showAllDetails() {
-    console.log("showAllDetails");
-  }
-  public showSkill(context:AppContextType,args:string[]) {
-    console.log("showSkill",args);
-  }
-  public cat(context:AppContextType,args:string[]) {
-    console.log("cat",args);
-  }
-  public catWithDetails(context:AppContextType,args:string[]) {
-    console.log("catWithDetails",args);
-  }
+  public preview(data: FuncData) {}
+  public showAll(data: FuncData) {}
+  public showPreview(data: FuncData) {}
+  public showAllDetails(data: FuncData) {}
+  public showSkill(data: FuncData) {}
+  public cat(data: FuncData) {}
+  public catWithDetails(data: FuncData) {}
 }

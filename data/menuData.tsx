@@ -11,6 +11,7 @@ const menuData: MenuData[] = [
     id: "help",
     options: [
       {
+        id:"help",
         icon: <></>,
         title: "Command help",
         onClick: (context, target) => {
@@ -23,6 +24,7 @@ const menuData: MenuData[] = [
         },
       },
       {
+        id:"run",
         icon: <></>,
         title: "Run command",
         onClick: (context, target) => {
@@ -35,6 +37,7 @@ const menuData: MenuData[] = [
         },
       },
       {
+        id:"preview",
         icon: <></>,
         title: "Show preview",
         onClick: (context, target) => {
@@ -47,23 +50,12 @@ const menuData: MenuData[] = [
         },
       },
       {
+        id:"write",
         icon: <></>,
         title: "Write in terminal",
         onClick: (context, target) => {
           context.terminalRef.current!.value = target.dataset.input!;
           context.terminalRef.current!.focus();
-        },
-      },
-    ],
-  },
-  {
-    id: "file",
-    options: [
-      {
-        icon: <></>,
-        title: "Open File",
-        onClick: (context, target) => {
-          alert(`Opening file: ${target.dataset.menuId}`);
         },
       },
     ],

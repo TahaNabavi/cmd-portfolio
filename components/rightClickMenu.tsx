@@ -5,9 +5,10 @@ import menuData from "@/data/menuData";
 import { AppContext, AppContextType } from "./context";
 
 export type MenuOption = {
+  id: string;
   icon: ReactNode;
   title: string;
-  onClick: (context:AppContextType,target: HTMLElement) => void;
+  onClick: (context: AppContextType, target: HTMLElement) => void;
 };
 
 type Menu = {
@@ -16,7 +17,6 @@ type Menu = {
   y: number;
   options: MenuOption[];
 };
-
 
 const RightClickMenu = () => {
   const context = useContext(AppContext)!;
@@ -47,24 +47,41 @@ const RightClickMenu = () => {
 
   const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
-
+  
     const target = getMenuTarget(e.target as HTMLElement);
     if (!target) return;
-
+  
     const menuOptions = getMenuOptions(target.dataset.menuId!);
-    if (menuOptions) {
-      setClickedElement(target);
-      setMenu({
-        visible: true,
-        x: e.pageX,
-        y: e.pageY,
-        options: menuOptions.options,
-      });
-
-      setTimeout(() => {
-        document.addEventListener("click", handleClickOutside);
-      }, 0);
+    if (!menuOptions) return;
+  
+    const menuWidth = 200; // match your minWidth
+    const menuHeight = menuOptions.options.length * 36; // estimated height per item
+  
+    let x = e.pageX;
+    let y = e.pageY;
+  
+    const padding = 8;
+  
+    // Adjust if the menu will overflow the viewport
+    if (x + menuWidth + padding > window.innerWidth) {
+      x = window.innerWidth - menuWidth - padding;
     }
+  
+    if (y + menuHeight + padding > window.innerHeight) {
+      y = window.innerHeight - menuHeight - padding;
+    }
+  
+    setClickedElement(target);
+    setMenu({
+      visible: true,
+      x,
+      y,
+      options: menuOptions.options,
+    });
+  
+    setTimeout(() => {
+      document.addEventListener("click", handleClickOutside);
+    }, 0);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -72,6 +89,25 @@ const RightClickMenu = () => {
       closeMenu();
       document.removeEventListener("click", handleClickOutside);
     }
+  };
+
+  const OptionBtn = ({ o }: { o: MenuOption }) => {
+    const dataKey = "btn" + o.id[0].toUpperCase() + o.id.slice(1);
+    const isVisible =
+      clickedElement?.dataset[dataKey] === "true" ||
+      clickedElement?.dataset[dataKey] === undefined;
+    return isVisible ? (
+      <button
+        className="p-1 hover:bg-gray-700 flex gap-2 items-center w-full rounded text-sm"
+        onClick={() => {
+          closeMenu();
+          clickedElement && o.onClick(context, clickedElement);
+        }}
+      >
+        {o.icon}
+        {o.title}
+      </button>
+    ) : null;
   };
 
   useEffect(() => {
@@ -98,17 +134,7 @@ const RightClickMenu = () => {
             style={{ top: menu.y, left: menu.x, minWidth: "200px" }}
           >
             {menu.options.map((option, i) => (
-              <button
-                key={i}
-                className="p-2 hover:bg-gray-700 flex gap-2 items-center w-full rounded-lg"
-                onClick={() => {
-                  closeMenu();
-                  clickedElement && option.onClick(context,clickedElement);
-                }}
-              >
-                {option.icon}
-                {option.title}
-              </button>
+              <OptionBtn o={option} key={i} />
             ))}
           </motion.div>
         )}

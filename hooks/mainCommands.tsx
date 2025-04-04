@@ -3,14 +3,17 @@ import {
   allCommandsMainName,
   commandExecute,
   findCommand,
+  FuncData,
 } from "@/commands/main";
 import users from "@/data/users";
-import { AppContextType, LocationPath } from "@components/context";
+import { LocationPath } from "@components/context";
 import getRandomDarkColor from "@global/randomColor";
+import Image from "next/image";
 
 export default class MainCommandsClass {
   constructor() {}
-  public cd(context: AppContextType, args: string[]) {
+  public cd(data: FuncData) {
+    const { context, args } = data;
     const paths = args[0].split("/").filter((g) => g.length !== 0);
     const { setLocation } = context;
 
@@ -50,17 +53,40 @@ export default class MainCommandsClass {
       return { ...g, path: [] };
     });
   }
-  public cls(context: AppContextType, args: string[]) {
+  public cls(data: FuncData) {
+    const { context } = data;
     const { setCommandItem } = context;
     setCommandItem([]);
   }
-  public user(context: AppContextType, args: string[]) {}
-  public userPreview(context: AppContextType, args: string[]) {}
-  public userShow(context: AppContextType, args: string[]) {}
-  public userChange(context: AppContextType, args: string[]) {
+  public userPreview(data: FuncData) {}
+  public userShow(data: FuncData) {
+    data.context.writer(
+      "normal",
+      data.input,
+      <>
+      {"["}{users.length}{"]"} users found:
+      <div className="row">
+        {users.map((e, i) => (
+          <div key={i} className="m-2 mid">
+            <Image
+              src={e.image}
+              alt=""
+              width={25}
+              height={25}
+              className="rounded-full me-1"
+            />
+            <div className="font-extrabold">{e.name}</div>
+          </div>
+        ))}
+      </div>
+      </>
+    );
+  }
+  public userChange(data: FuncData) {
+    const { context, args, input } = data;
     const user = users.find((g) => g.name === args[0]);
     if (!user) {
-      context.writer("normal",)
+      context.writer("error", input, `user with name "${args[0]} not found"`);
     } else {
       context.setLocation({
         user: user.name,

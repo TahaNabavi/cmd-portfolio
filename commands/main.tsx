@@ -7,7 +7,7 @@ import users from "@/data/users";
 
 export type FuncData = {
   context: AppContextType;
-  variables: string[];
+  args: string[];
   input: string;
   cmd: CommandOption | Command;
 };
@@ -45,17 +45,19 @@ export const allCommandsMainName = [...allCommands.map((g) => g.name)];
 export function findCommand(name: string) {
   return allCommands.find((g) => g.name === name);
 }
-
+function splitCommand(input: string): string[] {
+  return input.match(/"[^"]*"|\S+/g)?.map(s => s.replace(/"/g, "")) || [];
+}
 function run(
   context: AppContextType,
   type: "command" | "preview",
   cmd: Command | CommandOption,
-  items: string[],
+  args: string[],
   input: string
 ) {
   if (type === "command") {
     if (cmd.command) {
-      cmd.command({ context, variables: items, input, cmd });
+      cmd.command({ context, args, input, cmd });
       return true;
     } else {
       context.writer(
@@ -67,7 +69,7 @@ function run(
     }
   } else {
     if (cmd.preview) {
-      cmd.preview({ context, variables: items, input, cmd });
+      cmd.preview({ context, args, input, cmd });
       return true;
     } else {
       context.writer(
@@ -170,7 +172,7 @@ export function commandExecute(
   input: string,
   base?: string
 ) {
-  let args = input.trim().split(/\s+/);
+  let args = splitCommand(input);
   if (args.length === 0) {
     context.writer("normal", input, "");
     return;

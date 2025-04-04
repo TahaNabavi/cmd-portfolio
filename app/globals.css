@@ -71,16 +71,3 @@ body {
     border-left: 2px solid #ffffff44;
   }
 }
-/* .cmdFollow > *:only-child {
-  background: red;
-}
-.cmdFollow > *:first-child {
-  background: blue;
-  
-}
-.cmdFollow > *:last-child {
-  background: yellow;
-}
-.cmdFollow > *:not(:first-child):not(:last-child) {
-  background: purple;
-} */
